@@ -202,5 +202,31 @@ def send_tracks(message):
 
     bot.send_message(message.chat.id, responce)
         
+@bot.message_handler(commands=['getalbum'])
+def get_album(message):
+    """Обрабатывает команду getalbum, просит пользователя ввести название альбома, переходит к функции отправки списка треков
 
+    :param message: информация о боте, чате и пользователе
+    :type x: dict"""
+
+    album_name = bot.send_message(message.chat.id, 'Введите название альбома: ', reply_markup = keyboard)
+    bot.register_next_step_handler(album_name, send_tracks)
+
+
+def send_list_tracks(message):
+    """Получает от функции get_album() название альбома от пользователя и отправляет список треков из этого альбома в порядке возврастания даты
+
+    :param message: информация о боте, чате и пользователе
+    :type x: dict"""
+
+    key = message.text
+    tracks = collection.find({'album': key})
+    sorted_tracks = sorted(tracks, key=lambda x: x['date'])
+
+    responce = ''
+    for track in sorted_tracks:
+        responce += track['date'] + ' ' + track['name'] + '\n'
+
+    bot.send_message(message.chat.id, responce)
+    
 bot.polling(none_stop=True) 
