@@ -220,13 +220,13 @@ def send_list_tracks(message):
     :type x: dict"""
 
     key = message.text
-    tracks = collection.find({'album': key})
+    tracks = [i for i in collection.find({'album': key})]
     sorted_tracks = sorted(tracks, key=lambda x: x['date'])
 
     responce = ''
     for track in sorted_tracks:
         responce += track['date'] + ' ' + track['name'] + '\n'
-
+    
     bot.send_message(message.chat.id, responce)
     
 bot.polling(none_stop=True) 
